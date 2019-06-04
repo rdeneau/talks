@@ -7,7 +7,11 @@ separator: ^---$
 verticalSeparator: ^--$
 ---
 
-## Typage de données externes
+## _TypeScript_
+
+<!-- Left empty -->
+
+## Typage de données externes
 
 ### _Retour d’expériences_
 
@@ -38,11 +42,13 @@ _Animateur communauté Craft_
 
 ## Contexte
 
-- Données externes, non TypeScript :
-  - Objets JSON en E/S d’une Web API
-- Librairie d’infrastructure
-  - S’interface avec l’API
-  - `httpClient` Angular, `$ajax` jQuery
+- Données externes
+  - Objets JSON en E/S de serveurs C# <br>
+    _(ASP.NET Views, Controllers / Web API)_
+  - Front / Back gérés par l’équipe
+- Interfaçage avec librairie d’infrastructure
+  - _jQuery_ → `$.ajax()`
+  - _Angular_ → `httpClient`
 - Types à spécifier à l’usage
   - `httpClient.get<SomeDto>(url, args)`
 
@@ -55,6 +61,8 @@ _Animateur communauté Craft_
   - Typage côté API / côté client
   - Typage manuel / généré
   - Génération manuelle / automatisée
+
+> 👉 Puissance du typage en TS 🎉
 
 ---
 
@@ -134,9 +142,9 @@ Note:
 ### Typage généré côté API - Bilan
 
 - ✔️ Typage complet, correcte, up-to-date
-- ⚠️ Outils tiers et spécifiques C# → TS
-- ❌ Chaîne de build (API-SPA) + compliquée
-- ❌ Marche mieux voire qu’avec Visual Studio
+- ⚠️ _Outils tiers_ et spécifiques C# → TS
+- ❌ _Chaînes de build_ Front-Back + compliquées
+- ❌ Marche mieux/**que** avec _Visual Studio_
 - 🍌 *Producer driven*
   - ️️✔️ Typage au plus près de la source
   - ❌ ~~_Producer concern_~~ → _Consumer concern_
@@ -187,24 +195,24 @@ Note:
 
 ---
 
-### Typage semi-manuel "outillé"
+### Typage avec convertisseur JSON→TS
 
-> 💡 Utiliser un **convertisseur <br> JSON → TypeScript**
+- Typage _semi-manuel_ avec ces convertisseurs :
+  - Extension VS code : [JSON to TS](https://marketplace.visualstudio.com/items?itemName=MariusAlchimavicius.json-to-ts)
+    - *"Convert from clipboard"* (`Ctrl + Alt + V`)
+  - En ligne : [JSON 2 TS](http://www.json2ts.com/)
 
-- Extension VS code : [JSON to TS](https://marketplace.visualstudio.com/items?itemName=MariusAlchimavicius.json-to-ts)
-  - *"Convert from clipboard"* (`Ctrl + Alt + V`)
-- En ligne : [JSON 2 TS](http://www.json2ts.com/)
-  - 👀 [Démo](https://petstore.swagger.io/#/pet/addPet)
+> 👀 [Démo `addPet`](https://petstore.swagger.io/#/pet/addPet)
 
 ---
 
-### Typage semi-manuel "outillé" : Bilan
+### Typage avec convertisseur JSON→TS : Bilan
 
 - ️️✔️ Types générés = complets, correctes
 - 🍌 Ajustements nécessaires
   - Renommer `RootObject` → `Pet`
   - Enlever le `namespace`
-  - Indiquer les champs `enum` (`status`)
+  - Autres... → _on en reparle juste après_
 - ❌ Besoin d’exemples **JSON**
   - 💡 API REST → Swagger / capture résultats
 - ❌ 2 actions manuelles : *Copy, Convert*
@@ -213,10 +221,10 @@ Note:
 
 ## Typage par samples ❤️
 
-- Typage semi-manuel avec **inférénce**
+- Typage _semi-manuel_ avec **inférénce**
   - JSON = *object literal (array)* = type implicite
-  - Copie dans variable : `const sample = ~JSON` <br>
-    → Type inféré par le compilateur TypeScript
+  - Copie dans variable `const sample = ~JSON` <br>
+    → Type inféré par le compilateur TypeScript 👍
 - Capture du type avec [_type query_](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md#3.8.10) `typeof sample`
 
 > 👀 [Démo `PetSample`][demo-0-pet-sample]
@@ -225,7 +233,7 @@ Note:
 
 ---
 
-### Comparaison avec le typage semi-manuel outillé (convertisseur JSON-TS)
+### Comparaison / typage précédent <br>(_avec convertisseur JSON→TS)_
 
 - ️️✔️ Types ~~générés~~ inférés = sans erreur 👍
 - ❌ Besoin d’exemples JSON
@@ -255,64 +263,35 @@ Note:
 
 ### Définition des types imbriqués
 
-Dans `Pet` : `Category` et `Tag`
+- `category`, `tag` définissable par _inférence_
 
 ```ts
-type PetSample      = typeof petSample;
 type CategorySample = typeof petSample.category;
 type TagSample      = typeof petSample.tags[0];
 ```
 
---
-
-### Énumération `status`
-
-- Type imbriqué non inférable
-- Specs → `status` peut valoir :
-  - `'available'`
-  - `'pending'`
-  - `'sold'`
-- Plusieurs manières de le modéliser…
-
---
-
-#### Énumération `status` : _union type_
+- `status` à la main → _type union_ ou _enum_
 
 ```ts
 type PetStatus = 'available' | 'pending' | 'sold';
+status = 'available';      // `string` ? 😕
 
-const petStatus: PetStatus = 'sold';
+(const) enum PetStatus { Available = 'available'… }
+status = Status.Available; // énumération 👍
 ```
 
-- ✔️ Concis
-- ⚠️ IntelliSense pour `petStatus` indique parfois
-  - la structure : `'available' | 'pending'…`
-  - plutôt que le nom : `PetStatus`
+Note:
 
---
-
-#### Énumération `status` : _string enum_
-
-```ts
-enum PetStatus {
-    Available = 'available',
-    Pending   = 'pending',
-    Sold      = 'sold',
-}
-```
-
-- ❌ Verbeux
-- ✔️ Explicite à la lecture sur les valeurs permises
-  - `status = Status.Available` 👍
-  - `status = 'available'` 😕
+- Pour les énumérations d'entiers ou de chaînes, les `enum` me paraîssent le mieux.
+- On peut utiliser aussi les `const enum` pour ne pas avoir d'overhead en JavaScript, si l'on n'a pas besoin du mapping Code / Valeur (`Available` <-> `0`).
 
 ---
 
-### Mapper les types imbriqués
+### Appliquer les ajustements dans <br> les types inférés du _sample_
 
 - **Stratégies**
-  - Personnalisation _inline_ du *sample*
-  - Extension de types
+  - Personnalisation _inline_ du *sample* ⚡️
+  - Extension de types 🎉
 
 --
 
@@ -388,13 +367,13 @@ interface TagDto extends Partial<typeof petSample.tags[0]> {}
 
 ---
 
-#### Extension des types - "Surcharge"
+#### Extension des types - Surcharge
 
 > 🔖 Surcharge de champs <br>
 > _(`category`, `status`, `tags`)_
 
 ```ts
-type PetSample = typeof petSample;
+type PetSample = typeof petSample; // Intermédiaire requis
 interface PetDtoBaseKO extends PetSample {
   category: CategoryDto, // ❌ Incompatible
   tags    : TagDto[],    // ❌ Incompatible
@@ -454,9 +433,9 @@ interface PetDto extends PartialExcept<PetDtoBase,
 #### Extension des types - Démo
 
 - Patterns combinés
-- IntelliSense : erreurs, typages, tests
+- IntelliSense : erreurs, typages
 
-> 👀 [Démo ⚡️](https://stackblitz.com/edit/ts-runtime-types?embed=1&file=model.sample.ts&view=editor)
+> 👀 [Démo `model.sample.ts`](https://stackblitz.com/edit/ts-runtime-types?embed=1&file=model.sample.ts&view=editor)
 
 ---
 
@@ -495,10 +474,10 @@ interface PetDto extends PartialExcept<PetDtoBase,
 #### DTO générés (extrait)
 
 ```ts
-// ./model/category.ts
+// model/category.ts
 export interface Category { id?: number; name?: string; }
 
-// ./model/pet.ts
+// model/pet.ts
 import { Category } from './category';
 
 export interface Pet {
@@ -514,7 +493,7 @@ export interface Pet {
 #### Services Angular générés (extrait)
 
 ```ts
-// ./api/pet.service.ts
+// api/pet.service.ts
 @Injectable()
 export class PetService {
   constructor(protected httpClient: HttpClient...) {...}
@@ -564,7 +543,7 @@ Note:
 | [typescript-is](https://github.com/woutervh-/typescript-is) | 219 | 0.12.0 | 05/2019 |
 | [ts-runtime](https://github.com/fabiandev/ts-runtime)       | 241 | 0.2.0  | 10/2018 |
 
-> ⚠️ Pas encore _production ready_
+> 😕 Pas encore _production ready_
 
 ---
 
@@ -579,7 +558,7 @@ Note:
 | [io-ts](https://github.com/gcanti/io-ts)        | 1731 | 1.8.6 | 05/2019 | decode/encode   |
 | [runtypes](https://github.com/pelotom/runtypes) | 562  | 3.2.0 | 04/2019 | constraint, msg |
 
-> 👀 [Démo ⚡️](https://stackblitz.com/edit/ts-runtime-types?embed=1&file=model.io-ts.ts&view=editor)
+> 👀 [Démo `runtime-types`](https://stackblitz.com/edit/ts-runtime-types?embed=1&file=model.io-ts.ts&view=editor)
 
 Note:
 
