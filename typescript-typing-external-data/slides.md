@@ -221,7 +221,7 @@ Note:
 
 ## Typage par samples ❤️
 
-- Typage _semi-manuel_ avec **inférénce**
+- Typage _semi-manuel_ avec **inférence**
   - JSON = *object literal (array)* = type implicite
   - Copie dans variable `const sample = ~JSON` <br>
     → Type inféré par le compilateur TypeScript 👍
@@ -575,6 +575,7 @@ Note:
 - 💡 Génération côté client combinant :
   - *Runtime Types*
   - \+ Types TypeScript sous-jacents
+- Alternative : ~~REST~~ → [gRPC](https://grpc.io/)
 
 ---
 
@@ -584,7 +585,7 @@ Note:
 
 ---
 
-### 📚 Références - *Typage*
+### 📚 Ressources - *Typage*
 
 - [Type queries & `typeof`](https://mariusschulz.com/blog/type-queries-and-typeof-in-typescript) \~ Marius Schulz, Mar 2016
 - [TS 2.1: Mapped Types](https://mariusschulz.com/blog/typescript-2-1-mapped-types) \~ Marius Schulz, Jan 2017
@@ -593,15 +594,17 @@ Note:
 
 ---
 
-### 📚 Références - *Runtime type checking*
+### 📚 Ressources - *Runtime type checking*
 
-- [Typescript and validations at runtime boundaries](https://lorefnon.tech/2018/03/25/typescript-and-validations-at-runtime-boundaries/) <br>\~ Gaurab Paul, Mar 2018
+- [Typescript and validations at runtime boundaries](https://lorefnon.tech/2018/03/25/typescript-and-validations-at-runtime-boundaries/) <br>\~ Gaurab Paul (auteur de `io-ts`), Mar 2018
 - [TypeScript — Make types “real”, the type guards](https://medium.com/@wittydeveloper/814364e8dbe3) <br>\~ Charly Poly, Nov 2018
 
 ---
 
-## Merci
+## Merci 🙇
 
 [@DeneauRomain](https://twitter.com/DeneauRomain)
+
+[https://github.com/rdeneau/talks/ <br> typescript-typing-external-data/](https://github.com/rdeneau/talks/typescript-typing-external-data/)
 
 <img src="soat.png" class="plain">
